@@ -6,11 +6,12 @@ OpenBad is a Tauri v2 desktop whip companion focused on fast prompt injection wo
 
 ## Demo
 
-[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](https://www.bilibili.com/video/BV1ZwDiBsELY/)
+[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](https://aqiangai.github.io/openbad/)
 
+- Embedded demo page: [`aqiangai.github.io/openbad`](https://aqiangai.github.io/openbad/)
 - Bilibili: [`BV1ZwDiBsELY`](https://www.bilibili.com/video/BV1ZwDiBsELY/)
 - Embed URL: `//player.bilibili.com/player.html?isOutside=true&aid=116364605981245&bvid=BV1ZwDiBsELY&cid=37321510176&p=1`
-- GitHub repository READMEs sanitize `iframe` embeds, so the reliable option is linking the cover image to the Bilibili page.
+- GitHub repository READMEs sanitize `iframe` embeds, so the cover image now links to a GitHub Pages demo page that embeds the Bilibili player directly.
 
 ## Features
 

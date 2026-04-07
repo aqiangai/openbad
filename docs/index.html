@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenBad Demo</title>
+    <meta
+      name="description"
+      content="OpenBad 是一个 macOS 优先的桌面挥鞭助手。这个演示页内嵌了 B 站播放器，直接展示跟随式 whip overlay、文本回填和快捷操作流程。"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syncopate:wght@400;700&display=swap');
+
+      :root {
+        color-scheme: dark;
+        --bg: #120b07;
+        --bg-soft: #1f130c;
+        --panel: rgba(28, 18, 12, 0.88);
+        --panel-strong: rgba(40, 24, 15, 0.96);
+        --line: rgba(255, 213, 138, 0.16);
+        --ink: #fff3df;
+        --muted: #d9b996;
+        --accent: #ff8a1f;
+        --accent-soft: #ffd58a;
+        --accent-2: #f6b54d;
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+        --radius-xl: 32px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top left, rgba(255, 138, 31, 0.18), transparent 28%),
+          radial-gradient(circle at 85% 15%, rgba(255, 213, 138, 0.12), transparent 24%),
+          linear-gradient(180deg, #24150d 0%, var(--bg) 36%, #0d0805 100%);
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Space Mono", monospace;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 32px 32px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 50% 12%, rgba(255, 181, 77, 0.12), transparent 30%),
+          radial-gradient(circle at 15% 78%, rgba(255, 122, 24, 0.14), transparent 26%);
+        z-index: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 56px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        padding: 14px 18px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(18, 11, 7, 0.72);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 10px 34px rgba(0, 0, 0, 0.18);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        box-shadow: 0 12px 28px rgba(255, 138, 31, 0.18);
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .eyebrow,
+      .meta-label {
+        margin: 0;
+        color: var(--accent-soft);
+        font-size: 11px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .brand-title {
+        margin: 4px 0 0;
+        font-family: "Syncopate", sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.08em;
+      }
+
+      .topbar-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .pill-link,
+      .primary-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        text-decoration: none;
+        transition:
+          transform 180ms ease-out,
+          border-color 180ms ease-out,
+          background-color 180ms ease-out,
+          box-shadow 180ms ease-out;
+        cursor: pointer;
+      }
+
+      .pill-link {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .primary-link {
+        background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+        color: #1c1009;
+        border-color: rgba(255, 213, 138, 0.5);
+        font-weight: 700;
+        box-shadow: 0 18px 34px rgba(255, 138, 31, 0.22);
+      }
+
+      .pill-link:hover,
+      .primary-link:hover,
+      .pill-link:focus-visible,
+      .primary-link:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(255, 213, 138, 0.42);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      .hero-copy,
+      .hero-media,
+      .frame-card,
+      .info-card,
+      .footer-card {
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(33, 20, 13, 0.92), rgba(18, 11, 7, 0.96));
+        box-shadow: var(--shadow);
+      }
+
+      .hero-copy {
+        padding: 30px;
+        border-radius: var(--radius-xl);
+      }
+
+      .hero h1 {
+        margin: 14px 0 14px;
+        font-family: "Syncopate", sans-serif;
+        font-size: clamp(34px, 6vw, 70px);
+        line-height: 0.98;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 span {
+        display: block;
+        color: var(--accent-soft);
+      }
+
+      .hero-lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.8;
+        max-width: 60ch;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .stat {
+        padding: 16px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(255, 213, 138, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .stat strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 24px;
+        color: var(--accent-soft);
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .hero-media {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-xl);
+        min-height: 100%;
+      }
+
+      .hero-media::before,
+      .hero-media::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(6px);
+      }
+
+      .hero-media::before {
+        width: 220px;
+        height: 220px;
+        top: -48px;
+        right: -24px;
+        background: rgba(255, 138, 31, 0.18);
+      }
+
+      .hero-media::after {
+        width: 180px;
+        height: 180px;
+        bottom: -54px;
+        left: -36px;
+        background: rgba(255, 213, 138, 0.14);
+      }
+
+      .poster {
+        position: relative;
+        height: 100%;
+        padding: 22px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .poster img {
+        width: 100%;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 213, 138, 0.18);
+        display: block;
+      }
+
+      .poster-badge {
+        position: absolute;
+        top: 26px;
+        left: 26px;
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: rgba(14, 8, 5, 0.78);
+        border: 1px solid rgba(255, 213, 138, 0.18);
+        color: var(--accent-soft);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .poster-note {
+        position: absolute;
+        right: 26px;
+        bottom: 26px;
+        width: min(250px, calc(100% - 52px));
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(20, 12, 8, 0.82);
+        border: 1px solid rgba(255, 213, 138, 0.16);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      .frame-card {
+        padding: 22px;
+        border-radius: var(--radius-xl);
+      }
+
+      .frame-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .frame-title {
+        margin: 6px 0 0;
+        font-size: clamp(24px, 4vw, 38px);
+        line-height: 1.1;
+      }
+
+      .frame-subtitle {
+        margin: 10px 0 0;
+        color: var(--muted);
+        max-width: 54ch;
+        line-height: 1.7;
+      }
+
+      .viewer {
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 213, 138, 0.14);
+        background: #090504;
+      }
+
+      .viewer iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+
+      .info-stack {
+        display: grid;
+        gap: 16px;
+      }
+
+      .info-card,
+      .footer-card {
+        border-radius: var(--radius-xl);
+        padding: 20px;
+      }
+
+      .info-card h3,
+      .footer-card h3 {
+        margin: 8px 0 10px;
+        font-size: 18px;
+      }
+
+      .info-card p,
+      .footer-card p,
+      .footer-card li {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 13px;
+      }
+
+      .feature-list,
+      .meta-list {
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .feature-list li,
+      .meta-list li {
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 213, 138, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .footer-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .footer-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .page,
+      .hero-copy,
+      .hero-media,
+      .frame-card,
+      .info-card,
+      .footer-card {
+        animation: rise 560ms ease-out both;
+      }
+
+      .hero-media {
+        animation-delay: 70ms;
+      }
+
+      .grid {
+        animation: rise 620ms ease-out both;
+        animation-delay: 120ms;
+      }
+
+      .footer-card {
+        animation-delay: 180ms;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .grid,
+        .footer-card {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-actions,
+        .topbar-actions {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          width: min(100% - 20px, 1180px);
+          padding-top: 18px;
+        }
+
+        .topbar {
+          border-radius: 24px;
+          padding: 16px;
+        }
+
+        .hero-copy,
+        .frame-card,
+        .info-card,
+        .footer-card {
+          padding: 18px;
+          border-radius: 24px;
+        }
+
+        .hero h1 {
+          font-size: clamp(28px, 12vw, 48px);
+        }
+
+        .viewer {
+          border-radius: 16px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-mark" src="./openbad-mark.svg" alt="OpenBad logo" />
+          <div class="brand-copy">
+            <p class="eyebrow">OpenBad Demo Page</p>
+            <p class="brand-title">Desktop Whip Companion</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <a class="pill-link" href="https://github.com/aqiangai/openbad" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <a class="pill-link" href="https://www.bilibili.com/video/BV1ZwDiBsELY/" target="_blank" rel="noreferrer">
+            Bilibili
+          </a>
+        </div>
+      </header>
+
+      <section class="hero">
+        <article class="hero-copy">
+          <p class="eyebrow">macOS-first / Tauri v2 / Vue + Rust</p>
+          <h1>
+            OpenBad
+            <span>Whip Overlay</span>
+          </h1>
+          <p class="hero-lead">
+            一个为桌面 prompt workflow 做的跟随式挥鞭助手。激活后 whip 会持续跟随鼠标，支持命中特效、预设输入区域、默认文本回填，以及回车提交。
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-link" href="#viewer">Watch Embedded Demo</a>
+            <a class="pill-link" href="https://www.bilibili.com/video/BV1ZwDiBsELY/" target="_blank" rel="noreferrer">
+              Open on Bilibili
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <strong>101s</strong>
+              <span>演示时长，覆盖 summon、挥击、输入和退出流程。</span>
+            </div>
+            <div class="stat">
+              <strong>macOS</strong>
+              <span>当前演示页面展示的工作流以 macOS 原生输入注入为主。</span>
+            </div>
+            <div class="stat">
+              <strong>B 站嵌入</strong>
+              <span>这里是真正可播放的 iframe 页面，不再受 GitHub README 清洗限制。</span>
+            </div>
+          </div>
+        </article>
+
+        <aside class="hero-media">
+          <div class="poster">
+            <span class="poster-badge">Live Embedded Viewer</span>
+            <img src="./media/openbad-demo-cover.png" alt="OpenBad demo poster frame" />
+            <div class="poster-note">
+              README 只负责把你带到这里。真正的播放器放在这个 GitHub Pages 页面里，直接嵌 B 站，不再只是静态链接。
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid">
+        <article class="frame-card" id="viewer">
+          <div class="frame-header">
+            <div>
+              <p class="meta-label">Embedded Player</p>
+              <h2 class="frame-title">Bilibili Player Inside GitHub Pages</h2>
+              <p class="frame-subtitle">
+                这里直接使用 B 站播放器嵌入地址。仓库 README 无法保留 `iframe`，但 GitHub Pages 页面可以完整展示。
+              </p>
+            </div>
+          </div>
+
+          <div class="viewer">
+            <iframe
+              src="https://player.bilibili.com/player.html?isOutside=true&aid=116364605981245&bvid=BV1ZwDiBsELY&cid=37321510176&p=1"
+              title="OpenBad demo video"
+              scrolling="no"
+              frameborder="0"
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        </article>
+
+        <aside class="info-stack">
+          <section class="info-card">
+            <p class="meta-label">What You See</p>
+            <h3>Demo Focus</h3>
+            <ul class="feature-list">
+              <li>Whip overlay summon and cursor follow mode</li>
+              <li>Crack animation with hit flash feedback</li>
+              <li>Send prompt back to the previous input target</li>
+              <li>Fast exit flow for returning to normal pointer behavior</li>
+            </ul>
+          </section>
+
+          <section class="info-card">
+            <p class="meta-label">Build Notes</p>
+            <h3>Release Context</h3>
+            <ul class="meta-list">
+              <li>Stack: Vue + JavaScript + Vite + Rust + Tauri v2</li>
+              <li>Repository: <a href="https://github.com/aqiangai/openbad" target="_blank" rel="noreferrer">aqiangai/openbad</a></li>
+              <li>Video source: <a href="https://www.bilibili.com/video/BV1ZwDiBsELY/" target="_blank" rel="noreferrer">BV1ZwDiBsELY</a></li>
+              <li>Recommended use: open this page from README when you want real playback</li>
+            </ul>
+          </section>
+        </aside>
+      </section>
+
+      <section class="footer-card">
+        <div>
+          <p class="meta-label">Open Source</p>
+          <h3>Use This Page as the Public Demo Entrance</h3>
+          <p>
+            如果 GitHub Pages 已经启用，这个页面就是仓库最适合承接演示视频的入口。README 负责导流，真正的嵌入播放放在这里。
+          </p>
+        </div>
+
+        <div class="footer-actions">
+          <a class="primary-link" href="https://github.com/aqiangai/openbad" target="_blank" rel="noreferrer">
+            View Repository
+          </a>
+          <a class="pill-link" href="https://www.bilibili.com/video/BV1ZwDiBsELY/" target="_blank" rel="noreferrer">
+            Open Raw Video
+          </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -6,11 +6,12 @@ OpenBad 是一个基于 Tauri v2 的桌面挥鞭助手，当前主要面向 macO
 
 ## 演示视频
 
-[![OpenBad 演示封面](./docs/media/openbad-demo-cover.png)](https://www.bilibili.com/video/BV1ZwDiBsELY/)
+[![OpenBad 演示封面](./docs/media/openbad-demo-cover.png)](https://aqiangai.github.io/openbad/)
 
+- 演示页：[`aqiangai.github.io/openbad`](https://aqiangai.github.io/openbad/)
 - B 站视频：[`BV1ZwDiBsELY`](https://www.bilibili.com/video/BV1ZwDiBsELY/)
 - 嵌入地址：`//player.bilibili.com/player.html?isOutside=true&aid=116364605981245&bvid=BV1ZwDiBsELY&cid=37321510176&p=1`
-- GitHub 仓库 README 会清洗 `iframe`，所以可用方案是让封面图直接跳转到 B 站播放页。
+- GitHub 仓库 README 会清洗 `iframe`，所以现在封面图会跳转到 GitHub Pages 演示页，在那里直接嵌入 B 站播放器。
 
 ## 功能
 
