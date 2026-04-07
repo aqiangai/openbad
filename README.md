@@ -8,12 +8,12 @@ OpenBad is not a serious dashboard. It is a tiny desktop whip. Summon it, let it
 
 ## Demo
 
-[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](https://raw.githack.com/aqiangai/openbad/main/docs/index.html)
+[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](https://aqiangai.github.io/)
 
-- Embedded demo page: [`raw.githack.com/aqiangai/openbad/main/docs/index.html`](https://raw.githack.com/aqiangai/openbad/main/docs/index.html)
+- Embedded demo page: [`aqiangai.github.io`](https://aqiangai.github.io/)
 - Bilibili: [`BV1ZwDiBsELY`](https://www.bilibili.com/video/BV1ZwDiBsELY/)
 - Embed URL: `//player.bilibili.com/player.html?isOutside=true&aid=116364605981245&bvid=BV1ZwDiBsELY&cid=37321510176&p=1`
-- GitHub repository READMEs sanitize `iframe` embeds, so the cover image now links to a standalone preview page that embeds the Bilibili player directly.
+- GitHub repository READMEs sanitize `iframe` embeds, so the cover image now links to your standalone demo site.
 
 ## Features
 

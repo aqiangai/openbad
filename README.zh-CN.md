@@ -8,12 +8,12 @@ OpenBad 不是一个正经八百的效率面板，它就是一根桌面小鞭子
 
 ## 演示视频
 
-[![OpenBad 演示封面](./docs/media/openbad-demo-cover.png)](https://raw.githack.com/aqiangai/openbad/main/docs/index.html)
+[![OpenBad 演示封面](./docs/media/openbad-demo-cover.png)](https://aqiangai.github.io/)
 
-- 演示页：[`raw.githack.com/aqiangai/openbad/main/docs/index.html`](https://raw.githack.com/aqiangai/openbad/main/docs/index.html)
+- 演示页：[`aqiangai.github.io`](https://aqiangai.github.io/)
 - B 站视频：[`BV1ZwDiBsELY`](https://www.bilibili.com/video/BV1ZwDiBsELY/)
 - 嵌入地址：`//player.bilibili.com/player.html?isOutside=true&aid=116364605981245&bvid=BV1ZwDiBsELY&cid=37321510176&p=1`
-- GitHub 仓库 README 会清洗 `iframe`，所以现在封面图会跳转到独立演示页，在那里直接嵌入 B 站播放器。
+- GitHub 仓库 README 会清洗 `iframe`，所以现在封面图会跳转到你自己的独立演示站点，在那里直接嵌入 B 站播放器。
 
 ## 功能
 
