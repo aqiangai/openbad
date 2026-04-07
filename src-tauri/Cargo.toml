@@ -1,7 +1,7 @@
 [package]
 name = "openbad"
 version = "0.1.0"
-description = "A Tauri v2 desktop whip companion for OpenBad"
+description = "A desktop whip for nudging your tools"
 authors = ["roofxixi"]
 license = "MIT"
 repository = ""
