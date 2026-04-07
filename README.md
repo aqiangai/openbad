@@ -6,11 +6,11 @@ OpenBad is a Tauri v2 desktop whip companion focused on fast prompt injection wo
 
 ## Demo
 
-[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](./docs/media/openbad-demo.mov)
+[![OpenBad demo cover](./docs/media/openbad-demo-cover.png)](./docs/media/openbad-demo.mp4)
 
-- Demo video: [`docs/media/openbad-demo.mov`](./docs/media/openbad-demo.mov)
-- Format: MOV, 105s, 1660x1080, 60 fps
-- GitHub repository READMEs do not autoplay local MOV files. Click the cover image above to open the demo video.
+- Demo video: [`docs/media/openbad-demo.mp4`](./docs/media/openbad-demo.mp4)
+- Format: MP4, 101s, 1104x720, 30 fps
+- GitHub repository READMEs do not autoplay local video files. Click the cover image above to open the demo video.
 
 ## Features
 
